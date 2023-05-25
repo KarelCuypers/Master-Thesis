@@ -21,16 +21,9 @@ def uniaxial_strain(c, beta=3.37):
         w_intra = l / graphene.a_cc - 1
         w_inter = l / 0.335 - 1
 
-        print(z1)
-        print(z2)
-
-        # should be implemented with if statement in the hopping modifier for Z1 = Z2 based on paper in task
-        # x1 is x coord of atoms
-
         if np.array_equiv(z1, z2):
             return energy * np.exp(-beta * w_intra)
         else:
-            print("DIF LAYER")
             return 0.48 * np.exp(-beta * w_inter)
 
     return displacement, strained_hopping

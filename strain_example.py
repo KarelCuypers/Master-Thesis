@@ -34,9 +34,10 @@ def triaxial_strain(c):
 # graphene disc with a diameter of 100nm and a strain c = 10% / D_m same size as in the paper
 model = pb.Model(
     graphene.monolayer(),
-    circle(50),
-    triaxial_strain(c=0.1/50)
+    circle(30),
+    triaxial_strain(c=0.1/30)
 )
+
 model.plot()
 plt.show()
 

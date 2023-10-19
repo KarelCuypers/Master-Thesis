@@ -5,7 +5,6 @@ from math import sqrt, pi
 from pybinding.repository import graphene
 
 
-
 if __name__ == '__main__':
 
     model = pb.Model(graphene.monolayer(), pb.translational_symmetry())

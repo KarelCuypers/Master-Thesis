@@ -1,11 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pybinding as pb
-from math import sqrt, pi
-from pybinding.repository import graphene
 
 
-def draw_contour(solver, kx_space, ky_space):
+def draw_contour(solver, kx_space, ky_space, band_index, conduction=True):
 
     def calculate_surfaces(kx, ky):
         solver.set_wave_vector([kx, ky])
@@ -17,8 +14,8 @@ def draw_contour(solver, kx_space, ky_space):
     conduction_E = np.zeros(shape=len(kx_space) * len(ky_space))
     valence_E = np.zeros(shape=len(kx_space) * len(ky_space))
 
-    conduction_index = 4
-    valence_index = 5
+    conduction_index = band_index
+    valence_index = band_index
 
     for i, (kx, ky) in enumerate(zip(kx_list, ky_list)):
 
@@ -31,8 +28,10 @@ def draw_contour(solver, kx_space, ky_space):
     valence_E = valence_E.reshape(len(ky_space), len(kx_space))
 
     plt.figure(dpi=100)
-
     cmap = plt.get_cmap('coolwarm')
-    plt.contourf(conduction_E, 50, cmap=cmap)
+    if conduction:
+        plt.contourf(KX, KY, conduction_E, 50, cmap=cmap)
+    else:
+        plt.contourf(KX, KY, valence_E, 50, cmap=cmap)
     plt.colorbar()
     plt.show()

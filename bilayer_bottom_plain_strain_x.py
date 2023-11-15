@@ -10,10 +10,14 @@ def sinusoidal_strain(c, k, beta=3.37):
     """Produce both the displacement and hopping energy modifier"""
     @pb.site_position_modifier
     def displacement(x, y, z):
-        print(z)
-        ux = c * np.cos(k[0]*x + k[1]*y)
-        uy = 0
-        uz = 0
+        if z.all() == 0:
+            ux = c * np.cos(k[0]*x + k[1]*y)
+            uy = 0
+            uz = 0
+        else:
+            ux = 0
+            uy = 0
+            uz = 0
         return x + ux, y + uy, z + uz
 
     @pb.hopping_energy_modifier
@@ -50,7 +54,7 @@ def unit_cell(l1, l2):
     return pb.Polygon([A, B, C, D])
 
 
-a1, a2 = graphene.monolayer().vectors[0], graphene.monolayer().vectors[1]
+a1, a2 = graphene.bilayer().vectors[0], graphene.bilayer().vectors[1]
 
 times_l1 = 5 # determines size of the unit cell of the graphene sheet
 a = graphene.a_cc * sqrt(3)  # graphene unit cell length
@@ -59,21 +63,21 @@ l1_size = times_l1 * a  # lattice vector length * number of l1
 
 l2_size = l1_size * 2  # has to be twice as big because 60° angle changes the phase
 
-period = 2
+period = 1
 k = period * 2 * pi / l1_size * a1 / a  # wavelength = 2*pi/lattice vector length * number of l1
 # this makes sure there is exactly one period in the unit cell
 
 strained_model = pb.Model(
-    graphene.monolayer(),
+    graphene.bilayer(),
     unit_cell(l1= 3.1 * l1_size * a1 / a, l2= 3.1 * l2_size * a2 / a),
     pb.translational_symmetry(a1=l1_size, a2=l2_size),  # always needs some overlap with the rectangle
-    sinusoidal_strain(0.04, k)
+    sinusoidal_strain(0.01, k)
 )
 
 position = strained_model.system.xyz
 
 strained_model.plot()
-strained_model.lattice.plot_vectors(position=[-0.6, 0.3])  # nm
+strained_model.lattice.plot_vectors(position=[0, 0])  # nm
 plt.show()
 
 solver = pb.solver.lapack(strained_model)
@@ -86,7 +90,7 @@ for e in range(0, bands.num_bands):
     # independently
 plt.show()
 
-lat = [[i[0]*(times_l1), i[1]*(2*times_l1)] for i in strained_model.lattice.vectors]
+lat = [[i[0]*times_l1, i[1]*(2*times_l1)] for i in strained_model.lattice.vectors]
 full_lattice = pb.Lattice(a1=lat[0], a2=lat[1])
 
 k_points = [i for i in full_lattice.brillouin_zone()]

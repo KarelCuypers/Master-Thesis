@@ -75,10 +75,17 @@ for sub_name in ['A1', 'B1', 'A2', 'B2']:
 pb.pltutils.legend()
 plt.show()
 
+'''plt.figure()
+strain_solv = pb.solver.arpack(strained_model, 30)
+for sub_name in ['A1', 'B1', 'A2', 'B2']:
+    ldos = strain_solv.calc_ldos(energies=np.linspace(-1, 1, 1500), broadening=0.03,
+                                 position=[0, 0], sublattice=sub_name)
+    ldos.plot(label=sub_name)
+pb.pltutils.legend()
+plt.show()'''
 
 spatial_ldos = kpm_strain.calc_spatial_ldos(energy=np.linspace(-1, 1, 1500), broadening=0.03,  # eV
                                             shape=pb.regular_polygon(num_sides=6, radius=size, angle=pi))
-
 
 smap = spatial_ldos.structure_map(0)
 indices = smap.sublattices
